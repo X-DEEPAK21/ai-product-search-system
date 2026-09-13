@@ -1,7 +1,10 @@
 package com.ai.AiSearch.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -9,28 +12,62 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class RealUser {
+@Table(
+        name = "users", indexes = {
+                @Index(name = "idx_user_email", columnList = "email")
+        }
+)
+@Entity
+public class RealUser implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private  Long id;
+
+    @Column(nullable = false)
    private  String name;
+
+    @Column(nullable = false, unique = true)
    private  String email;
+
+   @Enumerated(EnumType.STRING)
+   @Column(nullable = false)
    private Gender gender;
+
+   @Enumerated(EnumType.STRING)
+   @Column(nullable = false)
    private Role role;
+
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
+    @Column(name = "is_verified")
+    private boolean isVerified=true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Auth provider = Auth.LOCAL;
+
+   @JsonIgnore
    private String password;
-   private LocalDateTime created_At;
-   private LocalDateTime updated_At;
 
-  /*  @OneToMany(mappedBy = "user")
-    private List<Conversation> conversations;*/
+   @Column(name = "created_at")
+   private LocalDateTime createdAt;
+    @Column(name = "verified_at")
+   private LocalDateTime updatedAt;
 
-   /* @PrePersist
+    @OneToMany(mappedBy = "user")
+    private List<Conversation> conversations;
+
+    @PrePersist
     public void onCreation(){
-        this.created_At=LocalDateTime.now();
+        this.createdAt=LocalDateTime.now();
     }
     @PreUpdate
     public void onUpdate(){
-        this.updated_At=LocalDateTime.now();
-    }*/
+        this.updatedAt=LocalDateTime.now();
+    }
 
 
 }
