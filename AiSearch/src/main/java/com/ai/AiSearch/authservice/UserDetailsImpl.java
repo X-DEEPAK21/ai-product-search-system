@@ -16,6 +16,9 @@ public class UserDetailsImpl implements UserDetails {
    public UserDetailsImpl(RealUser realUser){
       this.realUser=realUser;
    }
+    public RealUser getRealUser() {
+        return realUser;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,9 +1,14 @@
 package com.ai.AiSearch.controller;
 
-i
+
+import com.ai.AiSearch.requestDto.LoginRequestDto;
+import com.ai.AiSearch.requestDto.LoginResponseDto;
 import com.ai.AiSearch.requestDto.RegistrationRequestDto;
 import com.ai.AiSearch.responseDto.RegistrationResponseDto;
 import com.ai.AiSearch.authservice.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,18 @@ public class AuthController {
         RegistrationResponseDto response = authService.register(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> loginUser(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request,
+                                                      HttpServletResponse httpResponse){
+        LoginResponseDto loginResponseDto= authService.login(loginRequestDto);
+
+        Cookie cookie = new Cookie("refreshToken", loginResponseDto.getRefreshToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        httpResponse.addCookie(cookie);
+        return ResponseEntity.ok(loginResponseDto);
     }
 
 }

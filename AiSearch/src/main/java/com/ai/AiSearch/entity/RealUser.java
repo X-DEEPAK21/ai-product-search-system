@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +23,8 @@ public class RealUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private  Long id;
+    @Column(name = "user_id",nullable = false)
+    private  Long id;
 
     @Column(nullable = false)
    private  String name;
@@ -57,7 +59,7 @@ public class RealUser implements Serializable {
     @Column(name = "verified_at")
    private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userId")
     private List<Conversation> conversations;
 
     @PrePersist
